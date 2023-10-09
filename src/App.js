@@ -7,8 +7,6 @@ import {Register}  from './components/Register';
 import {Home} from './components/Home';
 import  {Assign}  from './components/Assign';
 
-
-
 function App() {
   return (
     <div className='md:flex min-h-screen'>
@@ -19,6 +17,8 @@ function App() {
           <Route path='/singup' element={<Register/>}></Route>
           <Route path='/information' element={<Information/>}></Route>
           <Route path='/assign' element={<Assign/>}></Route>
+
+
         </Routes>
       </div>
     </div>

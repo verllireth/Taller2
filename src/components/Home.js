@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const Home = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black-500">
+    <div className="min-h-screen flex items-center justify-center bg-black-500  mt-[-6rem]">
       <section className="relative max-w-6xl mx-auto px-4 sm:px-6">
         <div className="pt-32 pb-12 md:pt-40 md:pb-20">
           <div className="text-center pb-12 md:pb-16">

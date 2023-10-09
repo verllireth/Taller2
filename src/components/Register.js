@@ -1,97 +1,126 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const InputField = ({ label, name, type, placeholder, pattern, errorMessage, value, onChange }) => (
-  <div className="mb-4">
-    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
-      {label}
-    </label>
-    <input
-      className="mt-1 block w-full max-w-lg border-none bg-gray-100 h-11 rounded-xl shadow-lg hover:bg-blue-100
-       focus:bg-blue-100 focus:ring-0 text-center placeholder-center"
-      name={name}
-      id={name}
-      type={type}
-      placeholder={placeholder}
-      pattern={pattern} // Utiliza la expresión regular para permitir solo números
-      value={value}
-      onChange={onChange}
-    />
-    {errorMessage && <p className="text-red-500 text-xs italic">{errorMessage}</p>}
-  </div>
-);
-
 export const Register = () => {
-  const [identification, setIdentification] = useState('');
-  const [identificationError, setIdentificationError] = useState('');
+  const [formData, setFormData] = useState({
+    cedula: '',
+    nombre: '',
+    correo: '',
+    password: '',
+  });
 
-  const handleIdentificationChange = (e) => {
-    const value = e.target.value;
-    setIdentification(value);
+  const [errors, setErrors] = useState({});
+  const [isValid, setIsValid] = useState(false);
 
-    // Validar que solo se ingresen números
-    if (!/^\d+$/.test(value)) {
-      setIdentificationError('Solo se permiten números en este campo.');
-    } else {
-      setIdentificationError('');
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Validaciones
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    
+    let newErrors = {};
+
+    if (name === 'cedula' && !/^\d+$/.test(value)) {
+      newErrors[name] = 'Solo se permiten números en este campo.';
+    } else if (name === 'correo' && !emailRegex.test(value)) {
+      newErrors[name] = 'Correo inválido. Debe tener el formato example@correo.com.';
+    } else if (name === 'password' && !passwordRegex.test(value)) {
+      newErrors[name] = 'La contraseña debe contener al menos 8 caracteres, una mayúscula y un número.';
     }
+
+    setErrors(newErrors);
+    setIsValid(Object.keys(newErrors).length === 0);
   };
 
   return (
-    <div className="bg-custom-bgColor bg-cover bg-center bg-fixed bg-no-repeat bg-opacity-70 flex items-center justify-center min-h-screen ml-[300px]">
-      <div className="max-w-lg">
-        <h1 className="text-3xl text-center text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 mb-8">
-          Regístrate en GymGenius
-        </h1>
-        <form id="form" className="bg-white shadow-md rounded px-8 pt-6 pb-8">
-          <InputField
-            label="Nombre"
-            name="name"
-            type="text"
-            placeholder="Full name"
-          />
-          <InputField
-            label="Número de Cédula"
-            name="identification"
-            type="text"
-            placeholder="Ingrese número de cédula"
-            pattern="^\d+$" // Expresión regular para permitir solo números
-            errorMessage={identificationError}
-            value={identification}
-            onChange={handleIdentificationChange}
-          />
-          <InputField
-            label="Nombre de usuario"
-            name="username"
-            type="text"
-            placeholder="..."
-          />
-          <InputField
-            label="Correo"
-            name="email"
-            type="email"
-            placeholder="example@.com"
-          />
-          <div className="mt-7">
-            <InputField
-              label="Contraseña"
-              name="pass"
-              type="password"
-              placeholder="Fácil de recordar"
+    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+      <div className="max-w-lg mx-auto lg:ml-48  mt-[-2rem]"> 
+        <form className="bg-white p-8 rounded shadow-md max-w-sm"> 
+        <div className="max-w-lg mx-auto lg:ml-5"> 
+          <h1 className="text-3xl text-center text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 mb-8">
+              Asignar Rutina
+          </h1>
+        </div>        
+         <div className="mb-6"> {/* Aumentamos el espaciado vertical */}
+
+            <label htmlFor="cedula" className="block text-gray-700 font-bold mb-2">
+              Cédula
+            </label>
+            <input
+              type="text"
+              id="cedula"
+              name="cedula"
+              value={formData.cedula}
+              onChange={handleInputChange}
+              className="input-field w-full py-2 px-4 rounded border border-gray-300"
+              placeholder="Número de cédula"
+            />
+            {errors.cedula && <p className="text-red-500 text-xs italic mt-1">{errors.cedula}</p>}
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="nombre" className="block text-gray-700 font-bold mb-2">
+              Nombre
+            </label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleInputChange}
+              className="input-field w-full py-2 px-4 rounded border border-gray-300"
+              placeholder="Nombre completo"
             />
           </div>
-          <div className="mt-4 text-center">
-            <Link to="/assign">
-              <button
-                className="bg-lime-600 hover:bg-slate-500 text-white text-lg font-semibold py-2 px-6 rounded-full transition duration-300"
-              >
-                Registrarme
-              </button>
-            </Link>
+
+          <div className="mb-6">
+            <label htmlFor="correo" className="block text-gray-700 font-bold mb-2">
+              Correo
+            </label>
+            <input
+              type="email"
+              id="correo"
+              name="correo"
+              value={formData.correo}
+              onChange={handleInputChange}
+              className="input-field w-full py-2 px-4 rounded border border-gray-300"
+              placeholder="example@correo.com"
+            />
+            {errors.correo && <p className="text-red-500 text-xs italic mt-1">{errors.correo}</p>}
           </div>
+
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="input-field w-full py-2 px-4 rounded border border-gray-300"
+              placeholder="Contraseña"
+            />
+            {errors.password && <p className="text-red-500 text-xs italic mt-1">{errors.password}</p>}
+          </div>
+
+          <Link to={isValid ? '/assign' : '#'}>
+            <button
+              type="submit"
+              className={`bg-lime-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded ${
+                !isValid ? 'cursor-not-allowed opacity-50' : ''
+              }`}
+              disabled={!isValid}
+            >
+              Registrarme
+            </button>
+          </Link>
         </form>
       </div>
     </div>
   );
 };
+
